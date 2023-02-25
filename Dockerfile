@@ -1,0 +1,22 @@
+FROM node:19-bullseye-slim
+RUN apt-get update
+RUN apt-get install python3 -y
+
+RUN apt-get install python3-pip -y
+RUN pip install rdkit
+RUN pip install mordred
+
+WORKDIR /app
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
+RUN npm install
+
+
+COPY . .
+
+RUN chmod -R 777 /app/
+
+EXPOSE 3000
+CMD [ "node", "app.js" ]
