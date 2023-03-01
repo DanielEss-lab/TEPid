@@ -2,6 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const {spawn} = require('child_process');
 const app = express()
+const fs = require('fs');
+const formidable = require('formidable');
+const path = require('path');
+
 
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -33,24 +37,62 @@ app.post('/upload', (req, res) => {
         return;
     });
 
-
-
-    // in close event we are sure that stream from child process is closed
-    // python.on('close', (code) => {
-    //     console.log(`child process close all stdio with code ${code}`);
-    //     res.status(200).json({output: dataToSend });
-
-    //     console.log("sent ", dataToSend);
-    // });
-    
 });
+
+
+app.post('/uploadCSV', (req, res) => {
+    console.log("uploading csv...");
+
+    const form = formidable({ multiples: true });
+    form.parse(req).on('file', function (name, file) {
+        console.log('Got file:', name);
+        const uploadsDir = "/uploads";
+        const newPath =path.join(uploadsDir, file.name); 
+        fs.rename(file.path, newPath);
+
+        const python = spawn('python3', ['csvExtractor.py',newPath]);
+
+        python.stdout.on('data', function (data) {
+            dataToSend = data.toString();
+
+            if (dataToSend == "ERROR"){
+                res.status(404).json({ error: 'Invalid SMILE string' });
+                return;
+            }
+            res.status(200).send({output: dataToSend });
+            console.log(dataToSend);
+            return;
+        });
+        // fs.createReadStream(newPath).on('error', () => {
+        //     res.status(404).json({ error: 'Invalid CSV file' });
+        //     return;
+        // })
+        // .pipe(csv())
+        // .on('data', (row) => {
+        //     console.log(row);
+        // })
+    
+        // .on('end', () => {
+        //     // handle end of CSV
+        // })
+    });
+
+    const csvFile = req.body.csvFile;
+    res.status(200).send({output: "Wasssupp" });
+
+})
+
 
 app.get("/", function (req, res) {
     console.log("in /")
     res.sendFile(process.cwd() + "/index.html");
 });
 
-
+// fs.createReadStream("./migration_data.csv")
+//   .pipe(parse({ delimiter: ",", from_line: 2 }))
+//   .on("data", function (row) {
+//     console.log(row);
+//   })
 
 const port = 3000
 const host = "0.0.0.0"

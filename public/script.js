@@ -1,6 +1,16 @@
 //Display images on website or uploaded by user 
 let smileString = document.getElementById("smileString");
 let uploadForm = document.getElementById("uploadForm");
+let uploadCSV = document.getElementById("uploadCSV");
+
+
+
+smileStringCSV.onchange = function() {
+    if(this.files[0].size > 5242880){
+       alert("Your uploaded file is too big. Please choose a file under 5MBs");
+       this.value = "";
+    };
+};
 
 
 let output;
@@ -33,9 +43,47 @@ uploadForm.onsubmit = async function(e) {
     return;
 }
 
-async function predict(modelInput) {
 
-    const model = await tf.loadGraphModel('colorblind_friendly_tester/public/savedModel/model.json');
+uploadCSV.onsubmit = async function(e) {
+    e.preventDefault();
+    if (!smileStringCSV.files[0]){
+        alert("You did not upload a CSV file. Please upload a file and submit it again.");
+        return;
+    }
+    let formData = new FormData();
+    formData.append("smileStringCSV", smileStringCSV.files[0]);
+    for (var data of formData) {
+        console.log(data);
+    }
+    document.getElementById("loader").style.display = "inline";
+
+    jQuery.ajax({
+        method: 'POST',
+        url: '/uploadCSV',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            document.getElementById("testP").textContent =data.output;
+            document.getElementById("loader").style.display = "none";
+            predict(data.output)
+        },
+        error: function(jqXHR, textStatus, error) {
+            document.getElementById("loader").style.display = "none";
+            console.log(error);
+            document.getElementById("testP").textContent =error;
+            alert("Error! Please try again with a better CSV file.");
+        }
+    });
+    return;
+}
+
+
+async function predict(modelInput) {
+    string = modelInput.replace(/^Result\(/, '').replace(/\)$/,'');
+    console.log(string);
+    return;
+    const model = await tf.loadGraphModel('/public/savedModel/model.json');
 
     pred = model.predict(tfImg);
     //In dataset, 0 = Friendly, 1 = Unfriendly

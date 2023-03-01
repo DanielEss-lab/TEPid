@@ -13,9 +13,14 @@
   <header>Tolman Electronic Parameter Predictor</header>
   <div class="flow_box">
     <div class="container" id="inputContainer">
-      <form id="uploadForm" onsubmit="submit()">
+      <form id="uploadForm">
         <label for="smileString">Insert your Smile String here:</label><br>
         <input type="text" id="smileString" name="smileString"><br>
+        <button type="submit" name="upload">UPLOAD</button>
+      </form>
+      <form id="uploadCSV" enctype="multipart/form-data">
+        <label for="smileStringCSV">Insert CSV of Smile Strings here:</label><br>
+        <input type="file" id="smileStringCSV" name="smileStringCSV"><br>
         <button type="submit" name="upload">UPLOAD</button>
       </form>
     </div>
