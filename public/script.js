@@ -29,9 +29,9 @@ uploadForm.onsubmit = async function(e) {
             smileString: smile
         },
         success: function(data) {
-            console.log(data.output);
             document.getElementById("testP").textContent =data.output;
             document.getElementById("loader").style.display = "none";
+            predict(data.output);
         },
         error: function(jqXHR, textStatus, error) {
             document.getElementById("loader").style.display = "none";
@@ -80,15 +80,14 @@ uploadCSV.onsubmit = async function(e) {
 
 
 async function predict(modelInput) {
-    string = modelInput.replace(/^Result\(/, '').replace(/\)$/,'');
+    string = modelInput.replace(/^Result\(/, '').replace(/\)/,'');
     console.log(string);
-    return;
-    const model = await tf.loadGraphModel('/public/savedModel/model.json');
+    const model = await tf.loadGraphModel('/public/savedModel/RandomForest_TEPid.json');
 
-    pred = model.predict(tfImg);
+    pred = model.predict(string);
     //In dataset, 0 = Friendly, 1 = Unfriendly
     let result = "";
-
+    console.log("working...")
     pred.data().then((data) => {
         document.getElementsByClassName("output_screen")[0].style.display = "flex";
 

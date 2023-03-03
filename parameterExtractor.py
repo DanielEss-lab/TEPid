@@ -3,13 +3,15 @@ from rdkit.Chem import AllChem
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.ML.Descriptors import MoleculeDescriptors
-from mordred import Calculator, descriptors, Autocorrelation, Constitutional, Weight, MoeType, EState, InformationContent
+from mordred import Calculator, Autocorrelation, Constitutional, Weight, MoeType, EState, InformationContent
 import numpy as np
+import pickle
 
-
-smileString=sys.argv[1]
+smileString= sys.argv[1]
 
 try:
+    model = pickle.load(open("public/savedModel/GBReg_20230303.pkl", "rb"))
+    featureList = ["CIC0", "ATSC0v", "Mv", "ATSC3v", "Mare", "AMW", "SMR_VSA9", "MATS1c", "IC0", "MATS2c", "SsSiH3"]
     mol = Chem.MolFromSmiles(smileString)
     canonSmile = Chem.MolToSmiles(mol)
     calc = Calculator([
@@ -25,9 +27,8 @@ try:
         Autocorrelation.MATS(order=2,prop='c'),
         EState.AtomTypeEState(type='count',estate='sSiH3')
     ])
-    descrip = calc(mol)
-    print(descrip)
+    descrip = list(calc(mol))
+    output = model.predict([descrip])
+    print(output)
 except:
     print("ERROR")
-
-
