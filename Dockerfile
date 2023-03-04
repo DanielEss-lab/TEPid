@@ -5,7 +5,7 @@ RUN apt-get install python3 -y
 RUN apt-get install python3-pip -y
 RUN pip install rdkit
 RUN pip install mordred
-
+RUN pip install scikit-learn
 WORKDIR /app
 
 COPY package.json package.json

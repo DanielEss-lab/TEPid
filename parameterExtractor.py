@@ -1,8 +1,5 @@
 import sys
-from rdkit.Chem import AllChem
 from rdkit import Chem
-from rdkit.Chem import Descriptors
-from rdkit.ML.Descriptors import MoleculeDescriptors
 from mordred import Calculator, Autocorrelation, Constitutional, Weight, MoeType, EState, InformationContent
 import numpy as np
 import pickle
@@ -30,5 +27,4 @@ try:
     descrip = list(calc(mol))
     output = model.predict([descrip])
     print(output)
-except:
-    print("ERROR")
+except Exception as e: print(e)
