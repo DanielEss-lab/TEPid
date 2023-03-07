@@ -30,7 +30,7 @@ p{
     border: 7px solid #002E5D;
     margin: 20px auto 10px auto;
     width: 30%;
-    height: 60vh;
+    height: 70vh;
     border-radius: 30px;
     position: relative;
     text-align-last: center;
@@ -39,6 +39,13 @@ p{
     justify-content: center;
     width: 100%;
     text-align: center;
+}
+#moleImage{
+    display: none;
+    width: 60%;
+}
+#testP{
+    font-size: 2em;
 }
 .arrow{
     border: solid #002E5D;

@@ -1,15 +1,21 @@
-import sys
-from rdkit import Chem
-from mordred import Calculator, Autocorrelation, Constitutional, Weight, MoeType, EState, InformationContent
-import numpy as np
-import pickle
 
-smileString= sys.argv[1]
 
 try:
+    import sys
+    from rdkit import Chem
+    from rdkit.Chem import Draw
+    from mordred import Calculator, Autocorrelation, Constitutional, Weight, MoeType, EState, InformationContent
+    import numpy as np
+    import pickle
+
+    smileString= sys.argv[1]
+    imageID = sys.argv[2]
+    uploadImagePath = "uploads/"+imageID+".png"
     model = pickle.load(open("public/savedModel/GBReg_20230303.pkl", "rb"))
+
     featureList = ["CIC0", "ATSC0v", "Mv", "ATSC3v", "Mare", "AMW", "SMR_VSA9", "MATS1c", "IC0", "MATS2c", "SsSiH3"]
     mol = Chem.MolFromSmiles(smileString)
+    Draw.MolToFile(mol, uploadImagePath)
     canonSmile = Chem.MolToSmiles(mol)
     calc = Calculator([
         InformationContent.ComplementaryIC(order=0),
@@ -26,5 +32,7 @@ try:
     ])
     descrip = list(calc(mol))
     output = model.predict([descrip])
-    print(output)
-except Exception as e: print(e)
+    print(output[0])
+    
+except Exception as e:
+    print("ERROR") #print(e) # for troubleshooting

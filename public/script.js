@@ -15,8 +15,9 @@ smileStringCSV.onchange = function() {
 
 let output;
 
-uploadForm.onsubmit = async function(e) {
+uploadForm.onsubmit = function(e) {
     e.preventDefault();
+    document.getElementById("moleImage").style.display = "none";
     let smile = smileString.value;
     if (smileString.value == ""){
         console.log("Your smile string is empty.");
@@ -29,15 +30,17 @@ uploadForm.onsubmit = async function(e) {
             smileString: smile
         },
         success: function(data) {
-            document.getElementById("testP").textContent =data.output;
+            console.log("Success");
+            document.getElementById("testP").textContent =data.output+" cm-1";
             document.getElementById("loader").style.display = "none";
-            predict(data.output);
+            document.getElementById("moleImage").src = "uploads/"+data.imageID+".png";
+            document.getElementById("moleImage").style.display = "inline";
         },
         error: function(jqXHR, textStatus, error) {
             document.getElementById("loader").style.display = "none";
-            console.log(error);
-            document.getElementById("testP").textContent =error;
-            alert("Error! No smile string was uploaded. Please try again.");
+            console.log("invalid SMILE string...");
+            document.getElementById("testP").textContent = "";
+            alert("Error! An invalid SMILE string was uploaded. Please try again.");
         }
     });
     return;
@@ -46,6 +49,7 @@ uploadForm.onsubmit = async function(e) {
 
 uploadCSV.onsubmit = async function(e) {
     e.preventDefault();
+    document.getElementById("moleImage").style.display = "none";
     if (!smileStringCSV.files[0]){
         alert("You did not upload a CSV file. Please upload a file and submit it again.");
         return;
@@ -64,9 +68,8 @@ uploadCSV.onsubmit = async function(e) {
         contentType: false,
         processData: false,
         success: function(data) {
-            document.getElementById("testP").textContent =data.output;
+            document.getElementById("testP").textContent =data.output+"cm-1";
             document.getElementById("loader").style.display = "none";
-            predict(data.output)
         },
         error: function(jqXHR, textStatus, error) {
             document.getElementById("loader").style.display = "none";
@@ -76,32 +79,4 @@ uploadCSV.onsubmit = async function(e) {
         }
     });
     return;
-}
-
-
-async function predict(modelInput) {
-    string = modelInput.replace(/^Result\(/, '').replace(/\)/,'');
-    console.log(string);
-    const model = await tf.loadGraphModel('/public/savedModel/RandomForest_TEPid.json');
-
-    pred = model.predict(string);
-    //In dataset, 0 = Friendly, 1 = Unfriendly
-    let result = "";
-    console.log("working...")
-    pred.data().then((data) => {
-        document.getElementsByClassName("output_screen")[0].style.display = "flex";
-
-        if (data > 0.5) {
-            
-            result = "Unfriendly";
-            document.getElementById("output_text").innerHTML = "<p>Our model predicts that this image is: </p><p>" + result + " with a " + (data * 100).toFixed(2) + "% probability</p>";
-
-        }
-        else {
-            result = "Friendly";
-            document.getElementById("output_text").innerHTML = "<p>Our model predicts that this image is: </p><p>" + result + " with a " + (100-data * 100).toFixed(2) + "% probability</p>";
-
-        }
-        
-    });
 }

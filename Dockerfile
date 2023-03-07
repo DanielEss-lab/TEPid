@@ -3,6 +3,7 @@ RUN apt-get update
 RUN apt-get install python3 -y
 
 RUN apt-get install python3-pip -y
+RUN apt-get install libxrender1 libxtst6 libxi6 -y
 RUN pip install rdkit
 RUN pip install mordred
 RUN pip install scikit-learn
