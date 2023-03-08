@@ -18,9 +18,11 @@
         <input type="text" id="smileString" name="smileString"><br>
         <button type="submit" name="upload">UPLOAD</button>
       </form>
+      <br>
+      <br>
       <form id="uploadCSV" enctype="multipart/form-data">
         <label for="smileStringCSV">Insert CSV of Smile Strings here:</label><br>
-        <input type="file" id="smileStringCSV" name="smileStringCSV"><br>
+        <input type="file" id="smileStringCSV" accept=".csv" name="smileStringCSV"><br>
         <button type="submit" name="upload">UPLOAD</button>
       </form>
     </div>
@@ -32,6 +34,7 @@
         <div id="output_text">
           <p id="testP"></p>
           <img id="moleImage">
+          <a id="csvDownload" download>Download your generated CSV by clicking this link!</a>
 
         </div>
       </div>

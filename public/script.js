@@ -13,14 +13,15 @@ smileStringCSV.onchange = function() {
 };
 
 
-let output;
-
 uploadForm.onsubmit = function(e) {
     e.preventDefault();
     document.getElementById("moleImage").style.display = "none";
+    document.getElementById("csvDownload").style.display = "none";
+
     let smile = smileString.value;
     if (smileString.value == ""){
-        console.log("Your smile string is empty.");
+        alert("Your smile string is empty. Please try again.");
+        return;
     }
     document.getElementById("loader").style.display = "inline";
     jQuery.ajax({
@@ -31,7 +32,7 @@ uploadForm.onsubmit = function(e) {
         },
         success: function(data) {
             console.log("Success");
-            document.getElementById("testP").textContent =data.output+" cm-1";
+            document.getElementById("testP").innerHTML= data.output+"cm "+"<sup>-1</sup>";
             document.getElementById("loader").style.display = "none";
             document.getElementById("moleImage").src = "uploads/"+data.imageID+".png";
             document.getElementById("moleImage").style.display = "inline";
@@ -50,15 +51,18 @@ uploadForm.onsubmit = function(e) {
 uploadCSV.onsubmit = async function(e) {
     e.preventDefault();
     document.getElementById("moleImage").style.display = "none";
+    document.getElementById("csvDownload").style.display = "none";
+    document.getElementById("testP").textContent = "";
+
+
     if (!smileStringCSV.files[0]){
         alert("You did not upload a CSV file. Please upload a file and submit it again.");
         return;
     }
+    
     let formData = new FormData();
     formData.append("smileStringCSV", smileStringCSV.files[0]);
-    for (var data of formData) {
-        console.log(data);
-    }
+
     document.getElementById("loader").style.display = "inline";
 
     jQuery.ajax({
@@ -68,13 +72,13 @@ uploadCSV.onsubmit = async function(e) {
         contentType: false,
         processData: false,
         success: function(data) {
-            document.getElementById("testP").textContent =data.output+"cm-1";
             document.getElementById("loader").style.display = "none";
+            document.getElementById("csvDownload").href = data.path;
+            document.getElementById("csvDownload").style.display = "inline";
         },
         error: function(jqXHR, textStatus, error) {
             document.getElementById("loader").style.display = "none";
-            console.log(error);
-            document.getElementById("testP").textContent =error;
+            console.log("invalid CSV file...");
             alert("Error! Please try again with a better CSV file.");
         }
     });
