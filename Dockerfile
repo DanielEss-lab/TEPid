@@ -1,3 +1,6 @@
+#Contains all imported Node and Python packages. Called in: ./docker_build.sh 
+#Eventually, we need to set the specific version of each of these imports. Perhaps make a requirements.txt file.
+
 FROM node:19-bullseye-slim
 RUN apt-get update
 RUN apt-get install python3 -y
