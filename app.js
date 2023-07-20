@@ -34,7 +34,7 @@ app.post('/upload', (req, res) => {
     //If there is no smileString, an error can be generated.
     //This should never be called since we check for this in public/script.js first.
     if (!req.body.smileString) {
-        console.log("error!");
+        //console.log("error!");
         res.status(404).json({ error: 'Please provide an string' });
         return;
     }

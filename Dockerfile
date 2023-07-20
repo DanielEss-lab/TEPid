@@ -3,14 +3,21 @@
 
 FROM node:19-bullseye-slim
 RUN apt-get update
-RUN apt-get install python3 -y
+RUN apt-get install python3.10 -y
 
 RUN apt-get install python3-pip -y
 RUN apt-get install libxrender1 libxtst6 libxi6 -y
-RUN pip install rdkit
-RUN pip install mordred
-RUN pip install pandas
-RUN pip install scikit-learn
+
+COPY requirements.txt ./
+
+RUN pip install -r requirements.txt
+
+# RUN pip install rdkit
+# RUN pip install mordred
+# RUN pip install pandas
+# RUN pip install scikit-learn==1.2.2
+# RUN pip install lightgbm==3.3.5
+
 WORKDIR /app
 
 COPY package.json package.json
