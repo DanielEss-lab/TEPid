@@ -46,34 +46,15 @@ try:
 
     #Convert the smileString to a readable format (molecule in rdkit)
     mol = Chem.MolFromSmiles(smileString)
+    
     #Draw this molecule, save it to uploadImagePath.
     Draw.MolToFile(mol, uploadImagePath)
-    
+
+    mol = Chem.AddHs(mol)
 
 
     calculator = MolecularDescriptorCalculator(listOfRdKITDescriptors)
     descrip = list(calculator.CalcDescriptors(mol))
-    # calc = Calculator([
-    #     MoeType.EState_VSA(k=9), # EState_VSA9
-    #     BCUT.BCUT(prop='c', nth=0), #Likely wrong # BCUT2D_CHGLO
-    #     PathCount.PathCount(order=1, pi=False, total=False, log=False), # Ipc
-    #     MoeType.VSA_EState(k=1), #VSA_EState1 #why is this different than EState_VSA9?
-    #     BCUT.BCUT(prop='m', nth=0), #BCUT2D_MRHI
-    #     MoeType.SlogP_VSA(k=12), #SlogP_VSA12 # I dont think k can be 12?
-    #     MoeType.EState_VSA(k=1), #EState_VSA1
-    #     MoeType.VSA_EState(k=3), # VSA_EState3
-    #     MoeType.VSA_EState(k=10),# VSA_EState10
-    #     AtomCount.AtomCount(type='X'), # fr_halogen #Maybe??
-    #     BCUT.BCUT(prop='pe', k=0), # BCUT2D_LOGPHI
-    #     MoeType.VSA_EState(k=8), # VSA_EState8
-
-    # ])
-    # BCUT2D_CHGHI
-    # MolMR
-    # MaxPartialCharge
-    # Kappa1
-    # NumRotatableBonds
-    # SlogP_VSA6
 
     #Run these features (descript) through our model to predict our Tolman's parameter.
     output = model.predict([descrip])

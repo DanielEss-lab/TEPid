@@ -41,6 +41,8 @@ listOfRdKITDescriptors = [
 def find_features(smileString):
     try:
         mol = Chem.MolFromSmiles(smileString)
+        mol = Chem.AddHs(mol)
+
         descrip = list(calculator.CalcDescriptors(mol))
         output = model.predict([descrip])
         return round(output[0],2)
